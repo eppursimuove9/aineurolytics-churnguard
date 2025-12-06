@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv
+venv/
+env/
+# Data/Model Artifacts
+*.csv
+*.parquet
+*.h5
+*.pkl
+*.joblib
+*.xgb
+# Logs
+*.log
+# OS artifacts
+.DS_Store
+# Temporary/Sensitive
+deploy/k8s/*.yaml
+secrets.yaml
