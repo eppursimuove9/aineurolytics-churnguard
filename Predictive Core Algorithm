@@ -1,0 +1,160 @@
+import logging
+import pandas as pd
+import numpy as np
+from typing import List, Dict, Any, Union
+from xgboost import XGBClassifier
+from sklearn.preprocessing import StandardScaler
+from pydantic import BaseModel, ValidationError
+
+# --- Configuration & Setup ---
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('ChurnGuardEngine')
+
+class PredictionInput(BaseModel):
+    """Pydantic model for input data validation."""
+    customer_id: str
+    behavioral_score: float
+    transactional_value_k: float
+    support_ticket_volume_30d: int
+    engagement_score: float
+    contract_days_remaining: int
+
+class ChurnPredictor:
+    """
+    ChurnGuard™ Predictive Core: XGBoost Classifier Wrapper.
+    Handles data preprocessing, inference, and risk classification.
+    """
+    
+    def __init__(self, model_path: str = 'assets/churn_model.xgb', scaler_path: str = 'assets/scaler.pkl'):
+        """Initializes the model and scaler."""
+        self.model = None
+        self.scaler = None
+        self.feature_cols = [
+            "behavioral_score", "transactional_value_k", 
+            "support_ticket_volume_30d", "engagement_score", 
+            "contract_days_remaining"
+        ]
+        
+        # Risk classification thresholds
+        self.RISK_THRESHOLDS = {
+            "HIGH": 0.70,  # Intervention: CS/Sales high-touch
+            "MEDIUM": 0.40, # Intervention: Automated/Low-touch
+            "LOW": 0.00    # Intervention: Monitoring
+        }
+        
+        try:
+            # Production: Load model artifacts
+            # self.model = XGBClassifier().load_model(model_path)
+            # self.scaler = joblib.load(scaler_path)
+            # Mocking model loading for scaffold
+            self.model = self._mock_model() 
+            logger.info("ChurnPredictor initialized with mock model artifacts.")
+        except Exception as e:
+            logger.error(f"FATAL: Failed to load model/scaler artifacts: {e}")
+            # In production, this should halt the service or raise a critical error
+            # For scaffold, we proceed with mock.
+            pass
+
+    def _mock_model(self):
+        """Creates a mock model for TDD scaffold."""
+        class MockModel:
+            def predict_proba(self, X):
+                # Generates synthetic probabilities based on a simplified feature
+                # High ticket volume or low engagement score increases "risk"
+                risk_proxy = (X['support_ticket_volume_30d'] / 10.0) - (X['engagement_score'] * 0.2)
+                probas = np.clip(0.1 + risk_proxy, 0.01, 0.99)
+                # Output format: [[proba_not_churn, proba_churn], ...]
+                return np.array([[1 - p, p] for p in probas])
+        return MockModel()
+    
+    def preprocess(self, data: List[Dict[str, Any]]) -> pd.DataFrame:
+        """
+        Validates input structure and performs feature engineering/scaling.
+        """
+        try:
+            validated_data = [PredictionInput(**d).dict() for d in data]
+            df = pd.DataFrame(validated_data)
+            
+            # Feature Engineering Placeholder: e.g., Interaction terms
+            # df['interaction_term'] = df['transactional_value_k'] * df['engagement_score']
+            
+            X = df[self.feature_cols]
+            
+            # Production: Scale numerical features
+            # X_scaled = self.scaler.transform(X)
+            # X_scaled = pd.DataFrame(X_scaled, columns=self.feature_cols) 
+            
+            # For scaffold: return raw features
+            return X 
+        
+        except ValidationError as e:
+            logger.error(f"Input Data Validation Error: {e.errors()}")
+            raise ValueError(f"Invalid input data structure: {e.errors()}") from e
+        except Exception as e:
+            logger.error(f"Preprocessing Error: {e}")
+            raise RuntimeError(f"Preprocessing failed: {e}") from e
+
+    def classify_risk(self, probability: float) -> str:
+        """Classifies the churn probability into a risk bucket."""
+        if probability >= self.RISK_THRESHOLDS["HIGH"]:
+            return "HIGH"
+        elif probability >= self.RISK_THRESHOLDS["MEDIUM"]:
+            return "MEDIUM"
+        else:
+            return "LOW"
+
+    def predict(self, data: List[Dict[str, Any]]) -> List[Dict[str, Union[str, float]]]:
+        """
+        Runs the inference pipeline and returns structured predictions.
+        """
+        if self.model is None:
+            logger.error("Predictive model is not loaded. Cannot perform inference.")
+            return [{"customer_id": d.get('customer_id', 'N/A'), "error": "Model not available"} for d in data]
+
+        df_input = pd.DataFrame(data)
+        
+        try:
+            X_processed = self.preprocess(data)
+            
+            # Predict probability of Churn (assumes column index 1 is positive class)
+            probabilities = self.model.predict_proba(X_processed)[:, 1]
+            
+            results = []
+            for i, proba in enumerate(probabilities):
+                customer_id = df_input.iloc[i]['customer_id']
+                risk_level = self.classify_risk(proba)
+                
+                # Production-Ready Output Structure
+                result = {
+                    "customer_id": customer_id,
+                    "churn_probability": round(float(proba), 4),
+                    "churn_risk_level": risk_level,
+                    "action_code": f"ACTION-{risk_level}",
+                    # Explainability Placeholder: Integrate SHAP/LIME here
+                    "top_churn_feature": "contract_days_remaining" # Placeholder/Mock
+                }
+                results.append(result)
+            
+            logger.info(f"Successfully generated {len(results)} churn predictions.")
+            return results
+        
+        except (ValueError, RuntimeError, Exception) as e:
+            logger.critical(f"Inference Pipeline Failure: {e}")
+            return [{"customer_id": d.get('customer_id', 'N/A'), "error": f"Inference failed: {str(e)}"} for d in data]
+
+# --- Unit Test Example Placeholder (for tests/test_engine.py) ---
+"""
+def test_predictor_high_risk_classification():
+    predictor = ChurnPredictor()
+    high_risk_data = [{
+        "customer_id": "test_high",
+        "behavioral_score": 10.0,
+        "transactional_value_k": 50.0,
+        "support_ticket_volume_30d": 15,
+        "engagement_score": 0.1,
+        "contract_days_remaining": 30
+    }]
+    results = predictor.predict(high_risk_data)
+    assert results[0]['churn_risk_level'] == 'HIGH'
+    assert results[0]['churn_probability'] >= 0.70
+"""
