@@ -1,11 +1,9 @@
-# Core Dependencies
 fastapi
-uvicorn[standard]
-pandas
+uvicorn
 numpy
 scikit-learn
 xgboost
 pydantic
-# Development/Test Dependencies
 pytest
-prometheus-client
+pytest-cov
+requests

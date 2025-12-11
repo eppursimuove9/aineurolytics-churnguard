@@ -3,20 +3,25 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.env
 .venv
 venv/
+ENV/
 env/
-# Data/Model Artifacts
-*.csv
-*.parquet
-*.h5
-*.pkl
-*.joblib
-*.xgb
+*.sqlite3
+
+# Pytest cache
+.pytest_cache/
+
+# Models
+models/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
 # Logs
 *.log
-# OS artifacts
-.DS_Store
-# Temporary/Sensitive
-deploy/k8s/*.yaml
-secrets.yaml
