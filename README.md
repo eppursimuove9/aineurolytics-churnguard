@@ -74,3 +74,197 @@ aineurolytics-churnguard/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
+
+
+Installation
+
+Clone the repository:
+
+git clone https://github.com/eppursimuove9/aineurolytics-churnguard.git
+cd aineurolytics-churnguard
+
+
+Create and activate a virtual environment:
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+
+Install dependencies:
+
+pip install -r requirements.txt
+
+Train the Dummy Model (Required Before Running API)
+
+The repository includes a reproducible dummy model (XGBoost) for testing without real customer data.
+
+Train model:
+
+python src/ml/dummy_model.py
+
+
+This will output:
+
+models/dummy_xgb.pkl
+
+Running the API
+
+Export Python path:
+
+export PYTHONPATH=$(pwd)
+
+
+Launch the FastAPI service:
+
+uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
+
+
+Open API documentation:
+
+Swagger UI → http://localhost:8000/docs
+
+ReDoc → http://localhost:8000/redoc
+
+API Endpoints
+GET /api/health
+
+Example Response:
+
+{
+  "status": "ok",
+  "timestamp": "2025-01-10T22:10:21.000Z"
+}
+
+POST /api/v1/predict
+
+Example Request:
+
+{
+  "customer_id": "12345",
+  "features": {
+    "feature_0": 0.12,
+    "feature_1": 0.94,
+    "feature_2": 0.33
+  }
+}
+
+
+Example Response:
+
+{
+  "customer_id": "12345",
+  "prediction_timestamp": "2025-01-10T22:14:12.012Z",
+  "churn_probability": 0.6812,
+  "churn_risk_level": "MEDIUM",
+  "model_version": "v0.0.1"
+}
+
+Running Tests
+
+Execute full test suite:
+
+export PYTHONPATH=$(pwd)
+pytest -q
+
+
+Coverage includes:
+
+ML prediction engine
+
+FastAPI endpoints
+
+Continuous Integration (CI)
+
+GitHub Actions workflow:
+
+.github/workflows/ci.yml
+
+
+Pipeline runs on:
+
+every push
+
+every pull request
+
+Stages:
+
+Checkout
+
+Python setup
+
+Install dependencies
+
+Run tests
+
+Extending the System
+Add New ML Models
+
+Place additional models in:
+
+models/
+
+
+Update loader here:
+
+src/ml/churn_predictor.py
+
+Add Feature Engineering
+src/ml/feature_pipeline/
+
+Add Orchestration / ETL Processes
+src/orchestration/
+
+Add Docker Deployment
+docker/
+
+Documentation
+
+Full Technical Design Document (TDD):
+
+docs/aineurolytics_churnguard.pdf
+
+
+Includes:
+
+system architecture
+
+ML methodology
+
+feature definitions
+
+API specifications
+
+RevOps alignment
+
+KPIs & metrics
+
+scaling strategy
+
+Roadmap
+
+ML model lifecycle management (MLflow / W&B)
+
+Feature store integration
+
+Async inference mode
+
+Docker & Kubernetes deployment
+
+Monitoring / Observability layer
+
+Batch scoring engine
+
+Additional unit/integration tests
+
+Advanced feature pipeline
+
+License
+
+This project is proprietary and part of the Aineurolytics Predictive Intelligence Suite.
+All rights reserved.
+
+Contact
+
+Alex Rojas Segovia
+Founder & Architect — Aineurolytics
+LinkedIn: https://www.linkedin.com/in/alexrojas
