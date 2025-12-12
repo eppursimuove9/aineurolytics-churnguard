@@ -76,69 +76,77 @@ aineurolytics-churnguard/
 └── README.md
 
 
-Installation
+## Installation
 
-Clone the repository:
+### Clone the repository
 
+```bash
 git clone https://github.com/eppursimuove9/aineurolytics-churnguard.git
 cd aineurolytics-churnguard
+```
 
+### Create and activate a virtual environment
 
-Create and activate a virtual environment:
-
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
+```
 
+### Install dependencies
 
-Install dependencies:
-
+```bash
 pip install -r requirements.txt
+```
 
-Train the Dummy Model (Required Before Running API)
+## Train the Dummy Model (Required Before Running API)
 
 The repository includes a reproducible dummy model (XGBoost) for testing without real customer data.
 
-Train model:
+### Train model
 
+```bash
 python src/ml/dummy_model.py
+```
 
+This will output: `models/dummy_xgb.pkl`
 
-This will output:
+## Running the API
 
-models/dummy_xgb.pkl
+### Export Python path
 
-Running the API
-
-Export Python path:
-
+```bash
 export PYTHONPATH=$(pwd)
+```
 
+### Launch the FastAPI service
 
-Launch the FastAPI service:
-
+```bash
 uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
+```
 
+### Open API documentation
 
-Open API documentation:
+- **Swagger UI** → http://localhost:8000/docs
+- **ReDoc** → http://localhost:8000/redoc
 
-Swagger UI → http://localhost:8000/docs
+## API Endpoints
 
-ReDoc → http://localhost:8000/redoc
+### GET /api/health
 
-API Endpoints
-GET /api/health
+**Example Response:**
 
-Example Response:
-
+```json
 {
   "status": "ok",
   "timestamp": "2025-01-10T22:10:21.000Z"
 }
+```
 
-POST /api/v1/predict
+### POST /api/v1/predict
 
-Example Request:
+**Example Request:**
 
+```json
 {
   "customer_id": "12345",
   "features": {
@@ -147,10 +155,11 @@ Example Request:
     "feature_2": 0.33
   }
 }
+```
 
+**Example Response:**
 
-Example Response:
-
+```json
 {
   "customer_id": "12345",
   "prediction_timestamp": "2025-01-10T22:14:12.012Z",
@@ -158,113 +167,90 @@ Example Response:
   "churn_risk_level": "MEDIUM",
   "model_version": "v0.0.1"
 }
+```
 
-Running Tests
+## Running Tests
 
 Execute full test suite:
 
+```bash
 export PYTHONPATH=$(pwd)
 pytest -q
+```
 
+**Coverage includes:**
 
-Coverage includes:
+- ML prediction engine
+- FastAPI endpoints
 
-ML prediction engine
+## Continuous Integration (CI)
 
-FastAPI endpoints
+GitHub Actions workflow: `.github/workflows/ci.yml`
 
-Continuous Integration (CI)
+**Pipeline runs on:**
 
-GitHub Actions workflow:
+- every push
+- every pull request
 
-.github/workflows/ci.yml
+**Stages:**
 
+1. Checkout
+2. Python setup
+3. Install dependencies
+4. Run tests
 
-Pipeline runs on:
+## Extending the System
 
-every push
+### Add New ML Models
 
-every pull request
+Place additional models in: `models/`
 
-Stages:
+Update loader here: `src/ml/churn_predictor.py`
 
-Checkout
+### Add Feature Engineering
 
-Python setup
+`src/ml/feature_pipeline/`
 
-Install dependencies
+### Add Orchestration / ETL Processes
 
-Run tests
+`src/orchestration/`
 
-Extending the System
-Add New ML Models
+### Add Docker Deployment
 
-Place additional models in:
+`docker/`
 
-models/
+## Documentation
 
+**Full Technical Design Document (TDD):** `docs/aineurolytics_churnguard.pdf`
 
-Update loader here:
+**Includes:**
 
-src/ml/churn_predictor.py
+- system architecture
+- ML methodology
+- feature definitions
+- API specifications
+- RevOps alignment
+- KPIs & metrics
+- scaling strategy
 
-Add Feature Engineering
-src/ml/feature_pipeline/
+## Roadmap
 
-Add Orchestration / ETL Processes
-src/orchestration/
+- ML model lifecycle management (MLflow / W&B)
+- Feature store integration
+- Async inference mode
+- Docker & Kubernetes deployment
+- Monitoring / Observability layer
+- Batch scoring engine
+- Additional unit/integration tests
+- Advanced feature pipeline
 
-Add Docker Deployment
-docker/
+## License
 
-Documentation
-
-Full Technical Design Document (TDD):
-
-docs/aineurolytics_churnguard.pdf
-
-
-Includes:
-
-system architecture
-
-ML methodology
-
-feature definitions
-
-API specifications
-
-RevOps alignment
-
-KPIs & metrics
-
-scaling strategy
-
-Roadmap
-
-ML model lifecycle management (MLflow / W&B)
-
-Feature store integration
-
-Async inference mode
-
-Docker & Kubernetes deployment
-
-Monitoring / Observability layer
-
-Batch scoring engine
-
-Additional unit/integration tests
-
-Advanced feature pipeline
-
-License
-
-This project is proprietary and part of the Aineurolytics Predictive Intelligence Suite.
+This project is proprietary and part of the **Aineurolytics Predictive Intelligence Suite**.  
 All rights reserved.
 
-Contact
+## Contact
 
-Alex Rojas Segovia
-Founder & Architect — Aineurolytics
+**Alex Rojas Segovia**  
+Founder & Architect — Aineurolytics  
 LinkedIn: https://www.linkedin.com/in/alexrojas
