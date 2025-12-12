@@ -50,29 +50,29 @@ This repository provides:
 ```plaintext
 aineurolytics-churnguard/
 │
+├── .github/
+│   └── ci.yml                    # CI configuration
+├── docs/
+│   └── aineurolytics_churnguard.pdf  # Full Technical Design Document
 ├── src/
 │   ├── api/
 │   │   └── main.py                   # FastAPI inference service
 │   ├── ml/
 │   │   ├── churn_predictor.py        # ML prediction engine
 │   │   └── dummy_model.py            # Dummy XGBoost training script
-│   └── orchestration/                # Reserved for pipelines, ETLs, automation
+│   └── API py
+│   └── engine py
 │
 ├── tests/
 │   ├── test_api.py                   # API endpoint tests
+    └── test_engine.py
 │   └── test_predictor.py             # ML engine tests
+│
+├── .gitignore
 │
 ├── models/                           # Trained ML models (dummy model generated here)
 │
-├── docs/
-│   └── aineurolytics_churnguard.pdf  # Full Technical Design Document
-│
-├── .github/
-│   └── workflows/
-│       └── ci.yml                    # CI configuration
-│
 ├── requirements.txt
-├── .gitignore
 └── README.md
 ```
 
