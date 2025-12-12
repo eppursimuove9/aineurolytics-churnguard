@@ -254,4 +254,4 @@ All rights reserved.
 
 **Alex Rojas Segovia**  
 Founder & Architect — Aineurolytics  
-LinkedIn: https://www.linkedin.com/in/alexrojas
+LinkedIn: [https://www.linkedin.com/in/alexrojas](https://www.linkedin.com/in/alexrojassegovia/)
