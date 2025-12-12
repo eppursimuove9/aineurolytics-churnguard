@@ -1,23 +1,76 @@
 # 🛡️ ChurnGuard™: Predictive RevOps Intelligence Engine
+ 
+**Enterprise-Grade Churn Prediction System with FastAPI, XGBoost, Modular Architecture, and CI/CD**
 
-**Architect:** Alex Rojas Segovia, CEO - Aineurolytics | **Date:** 2025-12-06
+ChurnGuard™ is an enterprise-oriented predictive engine built to score customer churn probability in real time.  
+It is designed for SaaS RevOps teams seeking automation, predictive insights, and a scalable model-first architecture.
 
-## Executive Diagnosis Excerpt
-The current reactive customer retention strategy is costing the enterprise client **$12.75M in lost ARR quarterly** due to a Customer Churn Rate of 8.5%. ChurnGuard™ is the **Scientific RevOps Architecture** solution, leveraging an XGBoost core to deliver a proactive, high-fidelity churn risk score ($\hat{y}_{risk}$) directly into operational workflows (Salesforce, HubSpot) to optimize Customer Success resource allocation.
+This repository provides:
+- A complete ML inference engine  
+- A high-performance FastAPI service  
+- A reproducible dummy model  
+- Automated CI with GitHub Actions  
+- Comprehensive tests  
+- Fully modular project structure  
+- Technical documentation  
 
-## Strategic ROI
-The projected annualized impact includes **$21.6M in ARR Protection** and a **53% reduction in quarterly churn rate**. This shifts the Customer Success paradigm from universal coverage to **risk-prioritized intervention**.
+---
 
-## Architecture Summary
-The system is built on a scalable, resilient architecture utilizing a Feature Store, a containerized Python/XGBoost Model Engine, a low-latency FastAPI API serving layer, and orchestrated by a modern MLOps platform (e.g., Kubernetes, Helm, GitHub Actions).
+## Key Features
 
-## Getting Started
-1.  Ensure Python 3.11+ is installed.
-2.  Create and activate a virtual environment.
-3.  Install dependencies: `pip install -r requirements.txt`
-4.  Run unit tests: `pytest tests/`
-5.  Start the API (for local development): `uvicorn src.api:app --host 0.0.0.0 --port 8000`
+### Predictive ML Engine
+- XGBoost classifier with reproducible dummy model
+- Deterministic feature ordering
+- Probability scoring + risk segmentation (LOW / MEDIUM / HIGH)
+- Embedded model version metadata
 
-### 🖼️ Asset Placement Instruction
-Please place the generated PDF of the Technical Design Document and all visual assets (e.g., the 3D Blueprint) into the `assets/` directory.
+### API Layer (FastAPI)
+- Real-time inference endpoint: `/api/v1/predict`
+- Health endpoint: `/api/health`
+- Pydantic validation for input/output
+- Auto-generated OpenAPI docs (Swagger & ReDoc)
 
+### MLOps Architecture
+- Modular directory structure (`src/api`, `src/ml`, `src/orchestration`)
+- Extensible feature engineering and pipeline design
+- Reproducible dummy model training
+- Test suite included (pytest)
+
+### CI/CD
+- GitHub Actions CI pipeline under `.github/workflows/ci.yml`
+- Automated testing for every push and PR
+
+### Documentation
+- Full Technical Design Document (TDD) located in `/docs`
+
+---
+
+## Repository Structure
+
+```plaintext
+aineurolytics-churnguard/
+│
+├── src/
+│   ├── api/
+│   │   └── main.py                   # FastAPI inference service
+│   ├── ml/
+│   │   ├── churn_predictor.py        # ML prediction engine
+│   │   └── dummy_model.py            # Dummy XGBoost training script
+│   └── orchestration/                # Reserved for pipelines, ETLs, automation
+│
+├── tests/
+│   ├── test_api.py                   # API endpoint tests
+│   └── test_predictor.py             # ML engine tests
+│
+├── models/                           # Trained ML models (dummy model generated here)
+│
+├── docs/
+│   └── aineurolytics_churnguard.pdf  # Full Technical Design Document
+│
+├── .github/
+│   └── workflows/
+│       └── ci.yml                    # CI configuration
+│
+├── requirements.txt
+├── .gitignore
+└── README.md
