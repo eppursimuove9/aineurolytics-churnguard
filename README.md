@@ -74,9 +74,10 @@ aineurolytics-churnguard/
 ├── requirements.txt
 ├── .gitignore
 └── README.md
+```
 
 
-## Installation
+## Installation ## 
 
 ### Clone the repository
 
